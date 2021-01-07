@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React , {useContext } from 'react';
+import {AuthContext} from './hoc/AuthContextProvider';
+import Layout from './hoc/Layout/Layout';
+import {Switch , Route ,Redirect} from 'react-router-dom';
+import BloodBanks from './containers/BloodBanks/BloodBanks'
+import Auth from './containers/Auth/Auth'
 
-function App() {
+const App = () => {
+  const {authState }  = useContext(AuthContext);
+  const {  isAuthenticated } = authState;
+  let routes = !isAuthenticated ? (
+    <Switch>
+    <Route exact path='/' component={Auth} />
+    <Redirect to="/" />
+    </Switch>
+  ):(
+    <Switch>
+      <Route path='/bloodBanks' component={BloodBanks} />
+      <Redirect to="/bloodBanks" />
+      </Switch>
+  )
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      {routes}
+    </Layout>
   );
 }
 

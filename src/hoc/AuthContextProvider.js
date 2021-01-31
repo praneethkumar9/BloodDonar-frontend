@@ -7,11 +7,46 @@ let initialAuthState = {
 }
 export const AuthContext = createContext({});
 const AuthContextProvider = (props)=>{
-    const [authState , setAuthState ] = useState(initialAuthState)
+    const [authState , setAuthState ] = useState(initialAuthState);
+
+    
+    const setAuthenticationValues = useCallback((authStatus, authSatePayload)=>{
+        let tempAuthState ;
+        if(authStatus){
+             tempAuthState = {
+                token : authSatePayload.token,
+                username : authSatePayload.username,
+                userId : authSatePayload.userId,
+                isAuthenticated : true
+            }
+            const expirationDate = new Date(new Date().getTime()+authSatePayload.expiresIn);
+            localStorage.setItem('token',tempAuthState.token)
+            localStorage.setItem('username',tempAuthState.username)
+            localStorage.setItem('userId',tempAuthState.userId)
+            localStorage.setItem('expirationDate',expirationDate);
+            autoLogout(authSatePayload.expiresIn);
+        }else{
+            tempAuthState = initialAuthState;
+            localStorage.removeItem('token')
+            localStorage.removeItem('username')
+            localStorage.removeItem('userId')
+            localStorage.removeItem('expirationDate')
+        }
+        setAuthState(tempAuthState)
+        // eslint-disable-next-line
+    },[])
+    
+    const autoLogout = useCallback((millisecs)=>{
+        //clearTimeout(logoutTimeout);
+        setTimeout(()=>{
+            setAuthenticationValues(false)
+        },millisecs)
+    },[setAuthenticationValues]);
+
     const autoTryLogin = useCallback(() =>{
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('token');
         if(token){
-            const expirationDate = new Date(localStorage.get('expirationDate'));
+            const expirationDate = new Date(localStorage.getItem('expirationDate'));
             const currentDate = new Date();
             if(expirationDate<=currentDate){
                 setAuthenticationValues(false);
@@ -27,40 +62,12 @@ const AuthContextProvider = (props)=>{
         }else{
             setAuthenticationValues(false);
         }
-    },[]);
+    },[autoLogout,setAuthenticationValues]);
    
 
-    const setAuthenticationValues = (authStatus, authSatePayload)=>{
-        let tempAuthState ;
-        if(authStatus){
-             tempAuthState = {
-                token : authSatePayload.token,
-                username : authSatePayload.username,
-                userId : authSatePayload.userId,
-                isAuthenticated : true
-            }
-            const expirationDate = new Date(new Date().getTime()+authSatePayload.expiresIn);
-            localStorage.setItem('token',tempAuthState.token)
-            localStorage.setItem('username',tempAuthState.username)
-            localStorage.setItem('userId',tempAuthState.userId)
-            localStorage.setItem('expirationDate',expirationDate)
-            autoLogout(authSatePayload.expiresIn);
-        }else{
-            tempAuthState = initialAuthState;
-            localStorage.removeItem('token')
-            localStorage.removeItem('username')
-            localStorage.removeItem('userId')
-            localStorage.removeItem('expirationDate')
-        }
-        setAuthState(tempAuthState)
-    }
+    
 
-    const autoLogout = useCallback((millisecs)=>{
-        // clearTimeout(logoutTimeout);
-        let logoutTimeout = setTimeout(()=>{
-            setAuthenticationValues(false)
-        },millisecs)
-    },[setAuthenticationValues]);
+   
     let contextValue = {
         authState,
         setAuthenticationValues

@@ -3,6 +3,7 @@ import {AuthContext} from '../../hoc/AuthContextProvider';
 import {Redirect} from 'react-router-dom';
 import styles from './Auth.module.css';
 import Spinner from './Spinner/Spinner';
+import Notification from '../../components/Notification/Notification';
 import validator from 'validator';
 
 import config from '../../shared/config';
@@ -12,6 +13,7 @@ const bloodGroups = config.bloodGroups;
 const Auth = (props) => {
   const {setAuthenticationValues ,authState }  = useContext(AuthContext);
   const [loginForm,setLoginForm]=useState({ name : '' , password: '' ,error : {} });
+  const [notificationState,SetnotificationState]=useState({ show : false , message: ''  });
   const [registerForm,setRegisterForm]=useState(
     { name : '' , 
     password: '' ,
@@ -60,11 +62,11 @@ const Auth = (props) => {
           expiresIn ,
           isAuthenticated : true
       }
-      
+      setNotification("Login successfull !!");
       setAuthenticationValues(true,payload);
       props.history.push('/bloodBanks');
       }else{
-        alert("Login unsuccessfull ");
+        setNotification("Login unsuccessfull !!");
 
       }
     }else{
@@ -97,17 +99,15 @@ const Auth = (props) => {
       const apiResponse = await apiCalls.postAPI('/users/register',registerParams)
       setIsLoading(false)
       if(apiResponse && apiResponse[1]){
-        alert("Registered successfully ");
+        setNotification("Registered successfully !!");
         console.log("1")
         setIsRegister(false);
       }else{
         console.log(apiResponse)
         if(apiResponse[0].mongoError){
-
-          alert("Phone number already taken ");
+          setNotification("Phone number already taken !!");
         }else{
-          
-          alert("Register unsuccessfull ");
+          setNotification("Register unsuccessfull !!");
         }
 
       }
@@ -194,7 +194,23 @@ const Auth = (props) => {
     console.log("2");
     (!isRegister)?setIsRegister(true):setIsRegister(false);
   }
-
+  const NotificationElement =  (
+    <Notification show={notificationState.show} message={notificationState.message}/>
+  )
+  const setNotification = (message) =>{
+    let tempnotificationState = {...notificationState}
+    tempnotificationState = {
+      show : true,
+      message : message
+    }
+    SetnotificationState(tempnotificationState)
+    setTimeout(()=>{
+      tempnotificationState.show = false;
+      tempnotificationState = {...tempnotificationState};
+      SetnotificationState(tempnotificationState)
+    },2500)
+  }
+ 
   let addressForm = setAddress?(
     <Fragment>
     <div className={styles.formElement}>
@@ -238,7 +254,7 @@ const Auth = (props) => {
                       </form>
                       <div style={{padding:'2px' , font:'inherit' ,fontSize:'90%'}}>
                       <div  style={{paddingLeft: '13px', marginBottom:'4px'}} onClick={validateForm}>
-                      <span style={{color:'#5c8a8a' , cursor:'pointer'}}>Forgot your password?</span>
+                      <span style={{color:'#5c8a8a' , cursor:'pointer'}} >Forgot your password?</span>
                       </div>
                       <div  style={{paddingLeft: '13px'}} onClick={switchFormState}>
                       <span> Don't have an account? </span><span style={{color:'#5c8a8a' , cursor:'pointer'}}>Sign up</span>
@@ -335,6 +351,7 @@ const Auth = (props) => {
 let redirect = authState.isAuthenticated ? <Redirect to="/bloodBanks" /> : null;
   return (
           <div className={styles.AuthContainer} onClick={validateForm}>
+            {NotificationElement}
             <div className={styles.AuthContent}>
               {redirect}
               {!isLoading?form:

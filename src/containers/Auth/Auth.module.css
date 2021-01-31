@@ -1,0 +1,153 @@
+.AuthContainer{
+ /* position: relative;
+
+    width:100%;
+    height:100%;
+    background-color: #70b9b9;  */
+}
+
+.AuthContent{
+    margin: 2% auto;
+    width:30%;
+    text-align: center;
+    border : 2px solid #c2c0ba;
+    box-shadow: 5px 5px 9px #535351;
+    box-sizing:border-box;
+    background-color:#f5f0e2;
+    padding:10px;
+}
+.Error{
+    color: red;
+    text-align: left;
+    padding: 2px;
+    display: block;  
+    font-size: 80%;
+}
+.formLabel{
+    margin-bottom:3px;
+    display: block;
+    font-weight :bold;
+    text-align: left; 
+}
+.inputElement{
+  display: block;
+  width:100%;
+  border : 1px solid #ccc;
+  outline:none;
+  box-sizing: border-box;
+  background-color: #ccc;
+  font:inherit;
+  padding : 6px 10px;
+}
+.inputElement:focus {
+ outline: none;
+ background-color: #b6b6ae;
+}
+.formElement{
+  width: 100%;
+  padding : 4px;
+  box-sizing: border-box;
+}
+.loginButton{
+    background-color: #ccc;
+    text-align: center;
+    margin: 8px;
+    padding:2px;
+    color:#38383c;
+    border-radius:4px;
+    outline: none;
+    cursor: pointer;
+    font:inherit;
+    font-weight:bold;
+    width:100px;
+}
+
+.loginButton:disabled{
+    cursor: not-allowed;
+    color:#8d8d92;
+}
+.Optional{
+  color:#8d8d92;
+  font-size: 60%;
+}
+
+.gridContainer{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.gridContainer1{
+  display: grid;
+  grid-template-columns: 70% 30%;
+}
+.gridItem{
+  padding : 2px 1px;
+}
+.switchWrapper{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 80px;
+  /* position: absolute;
+  top: 0.5rem;
+  right: 0; */
+}
+.description {
+  margin-left: 1.25rem;
+}
+.switch{
+  display: inline-block;
+  height: 20px;
+  position: relative;
+  width: 36px;
+  margin-top: 2px;
+
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 0.25rem;
+  content: "";
+  width: 13px;
+  height: 13px;
+  left: 0.24rem;
+  position: absolute;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #3B3636;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+.slider.round {
+  border-radius: 17px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+@media (max-width:500px){
+    .AuthContent{
+        width:400px;
+    }
+}  
+

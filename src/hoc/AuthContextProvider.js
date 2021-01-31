@@ -11,16 +11,25 @@ const AuthContextProvider = (props)=>{
     const autoTryLogin = useCallback(() =>{
         const token = localStorage.getItem('token')
         if(token){
-            setAuthState({
-                token ,
-                username : localStorage.getItem('username'),
-                userId : localStorage.getItem('userId'),
-                isAuthenticated : true
-            });
+            const expirationDate = new Date(localStorage.get('expirationDate'));
+            const currentDate = new Date();
+            if(expirationDate<=currentDate){
+                setAuthenticationValues(false);
+            }else{
+                setAuthState({
+                    token ,
+                    username : localStorage.getItem('username'),
+                    userId : localStorage.getItem('userId'),
+                    isAuthenticated : true
+                });
+                autoLogout((expirationDate.getTime()-currentDate.getTime()));
+            }
         }else{
             setAuthenticationValues(false);
         }
-    },[])
+    },[]);
+   
+
     const setAuthenticationValues = (authStatus, authSatePayload)=>{
         let tempAuthState ;
         if(authStatus){
@@ -30,18 +39,28 @@ const AuthContextProvider = (props)=>{
                 userId : authSatePayload.userId,
                 isAuthenticated : true
             }
+            const expirationDate = new Date(new Date().getTime()+authSatePayload.expiresIn);
             localStorage.setItem('token',tempAuthState.token)
             localStorage.setItem('username',tempAuthState.username)
             localStorage.setItem('userId',tempAuthState.userId)
+            localStorage.setItem('expirationDate',expirationDate)
+            autoLogout(authSatePayload.expiresIn);
         }else{
             tempAuthState = initialAuthState;
             localStorage.removeItem('token')
             localStorage.removeItem('username')
             localStorage.removeItem('userId')
+            localStorage.removeItem('expirationDate')
         }
         setAuthState(tempAuthState)
     }
 
+    const autoLogout = useCallback((millisecs)=>{
+        // clearTimeout(logoutTimeout);
+        let logoutTimeout = setTimeout(()=>{
+            setAuthenticationValues(false)
+        },millisecs)
+    },[setAuthenticationValues]);
     let contextValue = {
         authState,
         setAuthenticationValues

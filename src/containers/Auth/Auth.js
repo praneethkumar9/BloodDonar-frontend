@@ -4,7 +4,7 @@ import React, {useContext, useState, Fragment} from 'react';
 import {AuthContext} from '../../hoc/AuthContextProvider';
 import {Redirect} from 'react-router-dom';
 import styles from './Auth.module.css';
-import Spinner from './Spinner/Spinner';
+import Spinner from '../../components/Spinner/Spinner';
 import Notification from '../../components/Notification/Notification';
 import validator from 'validator';
 
@@ -160,6 +160,10 @@ const Auth = (props) => {
     const tempError = {...error};
     delete tempError[inputName];
 
+    if (inputName=='password') {
+      delete tempError['confirmPassword'];
+    }
+
     const updatedObject = {
       error: tempError,
       [inputName]: event.target.value,
@@ -210,6 +214,7 @@ const Auth = (props) => {
           error.confirmPassword = 'Passwords you entered do not match';
         }
       }
+
       if (email && !validator.isEmail(email)) {
         error.email = 'Please enter valid email address';
       }
@@ -330,7 +335,6 @@ const Auth = (props) => {
                             padding: '2px', font: 'inherit', fontSize: '90%'}}>
                             <div style={{
                               paddingLeft: '13px', marginBottom: '4px'}}
-                              {/** replace with forgot password function*/}
                             onClick={validateForm}>
                               <span style={
                                 {color: '#5c8a8a', cursor: 'pointer'}}
@@ -338,7 +342,7 @@ const Auth = (props) => {
                             </div>
                             <div style={{paddingLeft: '13px'}}
                               onClick={switchFormState}>
-                              <span> Don't have an account? </span>
+                              <span> Dont have an account? </span>
                               <span style=
                                 {{color: '#5c8a8a', cursor: 'pointer'}}>
                                   Sign up</span>

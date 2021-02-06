@@ -1,6 +1,7 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 /* eslint-disable valid-jsdoc */
-/* eslint-disable linebreak-style */
+
 import localStorageVariables from '../shared/localStorageVariables';
 import config from '../shared/config';
 console.log(config);
